@@ -1,26 +1,11 @@
 import 'package:flutter/material.dart';
 
-class MyDesafio extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.red,
-        brightness: Brightness.light,
-      ),
-      home: DesafioPage(),
-    );
-  }
-}
-
 class DesafioPage extends StatelessWidget {
-
-  String title = 'Location Changer';
-  String subTitle = 'Plugin app for Theme';
-  String descButton = 'Logins with Facebook';
-  Color colorSecond = Colors.white;
-  Color colorPrimary = Colors.pinkAccent;
+  final String title = 'Location Changer';
+  final String subTitle = 'Plugin app for Theme';
+  final String descButton = 'Logins with Facebook';
+  final Color colorSecond = Colors.white;
+  final Color colorPrimary = Colors.pinkAccent;
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +49,8 @@ class DesafioPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50.0),
                     side: BorderSide(color: Colors.red),
                   ),
-                  padding: EdgeInsets.only(
-                      left: 60, right: 60, top: 20, bottom: 20),
+                  padding:
+                      EdgeInsets.only(left: 60, right: 60, top: 20, bottom: 20),
                 ),
                 onPressed: () {}),
           ],

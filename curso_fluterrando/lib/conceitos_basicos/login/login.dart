@@ -1,6 +1,6 @@
-import 'package:cursofluterrando/login/login_page.dart';
-import 'package:cursofluterrando/my_change_notify/my_change_notify.dart';
-import '../app_controller.dart';
+import 'package:cursofluterrando/conceitos_basicos/login/login_page.dart';
+import 'package:cursofluterrando/conceitos_basicos/my_change_notify/my_change_notify.dart';
+import '../my_change_notify/app_controller.dart';
 import 'package:flutter/material.dart';
 
 class MyLogin extends StatelessWidget {
