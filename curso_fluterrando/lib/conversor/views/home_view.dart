@@ -1,7 +1,22 @@
 import 'package:cursofluterrando/conversor/components/currency_box.dart';
+import 'package:cursofluterrando/conversor/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final TextEditingController toText = TextEditingController();
+  final TextEditingController fromText = TextEditingController();
+  HomeController? homeController;
+
+  void initState() {
+    super.initState();
+    homeController = HomeController(toText: toText, fromText: fromText);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +33,27 @@ class HomeView extends StatelessWidget {
                 height: 150,
                 color: Colors.white,
               ),
-              CurrencyBox(),
+              CurrencyBox(
+                controller: toText,
+                items: homeController!.currencies,
+                onChanged: (model) {
+                  setState(() {
+                    homeController!.toCurrency = model;
+                  });
+                },
+                isSelectedItem: homeController!.toCurrency,
+              ),
               SizedBox(height: 10),
-              CurrencyBox(),
+              CurrencyBox(
+                controller: fromText,
+                items: homeController!.currencies,
+                onChanged: (model) {
+                  setState(() {
+                    homeController!.fromCurrency = model;
+                  });
+                },
+                isSelectedItem: homeController!.fromCurrency,
+              ),
               SizedBox(height: 50),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -31,7 +64,9 @@ class HomeView extends StatelessWidget {
                   padding:
                       EdgeInsets.only(left: 60, right: 60, top: 20, bottom: 20),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  homeController!.convert();
+                },
                 child: Text('Converter'),
               ),
             ],
