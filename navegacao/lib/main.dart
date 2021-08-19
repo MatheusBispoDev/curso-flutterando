@@ -12,12 +12,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      routes: {
+      home: MyHomePage(
+        title: 'Dale',
+      ),
+      /*routes: {
         '/': (context) => MyHomePage(title: 'Flutter Nav'),
         '/screen2': (context) => Screen2(),
         '/screen3': (context) => Screen3(),
       },
-      /*onGenerateRoute: (RouteSettings settings) {
+      onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case '/':
             return CupertinoPageRoute(
@@ -47,35 +50,40 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  void _increment() {
+    setState(() {
+      _counter++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        leading: IconButton(
+        /*leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
             final can =
                 Navigator.canPop(context); //Verifica se da pra fechar a rotas
             can ? Navigator.pop(context) : print('Não podemos fechar a rota');
           },
-        ),
+        ),*/
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            CounterProvider(_counter, child: GreatGrandFather()),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        onPressed: _increment,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
+      /*floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Navigator.pushNamed(context, '/screen2');
 
@@ -83,11 +91,100 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
+      ),*/
+    );
+  }
+}
+
+class CounterProvider extends InheritedWidget {
+  final counter;
+
+  CounterProvider(this.counter, {Key? key, required this.child})
+      : super(key: key, child: child);
+
+  final Widget child;
+
+  //Pega e chama a instancia mais proxima do CounterProvider que esteja mias perto do widget e assim será possível usar o atributo counter
+  static CounterProvider of(BuildContext context) {
+    return (context.dependOnInheritedWidgetOfExactType<CounterProvider>()
+        as CounterProvider);
+  }
+
+  //Vai notificar e atualizar todos os dados que estão usando o CounterProvider
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return true;
+  }
+}
+
+class GreatGrandFather extends StatelessWidget {
+  const GreatGrandFather({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 400,
+      height: 250,
+      color: Colors.red,
+      child: GrandFather(),
+    );
+  }
+}
+
+class GrandFather extends StatelessWidget {
+  const GrandFather({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 370,
+        height: 220,
+        color: Colors.purple,
+        child: Father(),
       ),
     );
   }
 }
 
+class Father extends StatelessWidget {
+  const Father({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 300,
+        height: 200,
+        color: Colors.blue,
+        child: Child(),
+      ),
+    );
+  }
+}
+
+class Child extends StatelessWidget {
+  const Child({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final int counter = CounterProvider.of(context).counter;
+    return Center(
+      child: Container(
+        width: 200,
+        height: 120,
+        color: Colors.orange,
+        child: Center(
+          child: Text('Dale: $counter'),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+/*
 class Screen2 extends StatefulWidget {
   const Screen2({Key? key}) : super(key: key);
 
@@ -220,3 +317,4 @@ class _Screen4State extends State<Screen4> {
     );
   }
 }
+*/
