@@ -52,6 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+                leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: () {
+          final can = Navigator.canPop(context); //Verifica se da pra fechar a rotas
+          can ? Navigator.pop(context) : print('Não podemos fechar a rota');
+        },),
       ),
       body: Center(
         child: Column(
@@ -92,7 +96,11 @@ class _Screen2State extends State<Screen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Screen2'),
+        title: Text('Screen 2'),
+                leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: () {
+          final can = Navigator.canPop(context); //Verifica se da pra fechar a rotas
+          can ? Navigator.pop(context) : print('Não podemos fechar a rota');
+        },),
       ),
       body: Container(),
       floatingActionButton: FloatingActionButton(
@@ -127,7 +135,41 @@ class _Screen3State extends State<Screen3> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Screen3'),
+        title: Text('Screen 3'),
+      ),
+      body: Container(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          /*Navigator.popUntil(
+            context,
+            ModalRoute.withName('/'),
+          ); //Fecha todas a telas, até parar na tela selecionada (no caso, a home) - Fechamento de fluxo*/
+          Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(builder: (context) => Screen4()),
+              /*ModalRoute.withName('/screen2')); //Vai para a Screen 4 e fecha todas as telas entre a screen 4 e a screen 2*/
+              (route) => false); //Ele vai matar todas as rotas e só deixar a tela que está
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class Screen4 extends StatefulWidget {
+  const Screen4({Key? key}) : super(key: key);
+
+  @override
+  _Screen4State createState() => _Screen4State();
+}
+
+class _Screen4State extends State<Screen4> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Screen 4'),
       ),
       body: Container(),
       floatingActionButton: FloatingActionButton(
