@@ -52,10 +52,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-                leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: () {
-          final can = Navigator.canPop(context); //Verifica se da pra fechar a rotas
-          can ? Navigator.pop(context) : print('Não podemos fechar a rota');
-        },),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            final can =
+                Navigator.canPop(context); //Verifica se da pra fechar a rotas
+            can ? Navigator.pop(context) : print('Não podemos fechar a rota');
+          },
+        ),
       ),
       body: Center(
         child: Column(
@@ -92,29 +96,59 @@ class Screen2 extends StatefulWidget {
 }
 
 class _Screen2State extends State<Screen2> {
+  Future<bool> _onWillPop() async {
+    return (await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Sem volta'),
+            actions: [
+              ElevatedButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+              ElevatedButton(
+                child: Text('Cancelar'),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Screen 2'),
-                leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: () {
-          final can = Navigator.canPop(context); //Verifica se da pra fechar a rotas
-          can ? Navigator.pop(context) : print('Não podemos fechar a rota');
-        },),
-      ),
-      body: Container(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //Navigator.pop(context, 'Dale familia'); //Passando parâmetro ao dar pop
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => Screen3(),
-                settings: RouteSettings(name: '/screen3', arguments: 'Title')),
-          ); //Destroi a tela 2 e coloca a tela 3 no lugar dela
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+    return WillPopScope(
+      onWillPop: _onWillPop, //Impede que o usuário volte para a outra tela
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Screen 2'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.maybePop(context); //Verifica se há algum WillPopScope, se tiver ele vai chamar a função _onWillPop - Funciona com o voltar do Android
+            },
+          ),
+        ),
+        body: Container(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            //Navigator.pop(context, 'Dale familia'); //Passando parâmetro ao dar pop
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) => Screen3(),
+                  settings:
+                      RouteSettings(name: '/screen3', arguments: 'Title')),
+            ); //Destroi a tela 2 e coloca a tela 3 no lugar dela
+          },
+          tooltip: 'Increment',
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }
@@ -148,7 +182,8 @@ class _Screen3State extends State<Screen3> {
               context,
               CupertinoPageRoute(builder: (context) => Screen4()),
               /*ModalRoute.withName('/screen2')); //Vai para a Screen 4 e fecha todas as telas entre a screen 4 e a screen 2*/
-              (route) => false); //Ele vai matar todas as rotas e só deixar a tela que está
+              (route) =>
+                  false); //Ele vai matar todas as rotas e só deixar a tela que está
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
