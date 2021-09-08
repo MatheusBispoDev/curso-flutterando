@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
               controller: textController,
               decoration: InputDecoration(
                   border: OutlineInputBorder(), labelText: 'cep'),
-                  keyboardType: TextInputType.number,
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 10),
             ElevatedButton(
@@ -38,20 +38,29 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             SizedBox(height: 20),
-            StreamBuilder<Map>(
+            StreamBuilder<SearchCepState>(
               stream: searchCepBloc.cepResult,
               builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Cidade: ${snapshot.error}');
-                }
                 if (!snapshot.hasData) {
                   return Container();
                 }
-                if (snapshot.connectionState == ConnectionState.waiting) {
+
+                var state = snapshot.data;
+
+                if (state is SearchCepError) {
+                  return Text(
+                    'Cidade: ${snapshot.error}',
+                    style: TextStyle(color: Colors.red),
+                  );
+                }
+
+                if (state is SearchCepLoading) {
                   return Expanded(
                       child: Center(child: CircularProgressIndicator()));
                 }
-                return Text('Cidade: ${snapshot.data!['localidade']}');
+
+                state = state as SearchCepSucess;
+                return Text('Cidade: ${state.data['localidade']}');
               },
             ),
           ],
