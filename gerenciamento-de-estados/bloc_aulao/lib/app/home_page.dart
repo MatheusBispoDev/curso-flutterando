@@ -1,5 +1,7 @@
 import 'package:bloc_aulao/app/search_cep_bloc.dart';
+import 'package:bloc_aulao/app/search_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -10,7 +12,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController textController = TextEditingController();
-  final searchCepBloc = SearchCepBloc();
+  //final searchCepBloc = SearchCepBloc();
+
+  @override
+  void dispose() {
+    //searchCepBloc.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +42,29 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               child: Text('Pesquisar'),
               onPressed: () {
-                searchCepBloc.searchCep.add(textController.text);
+                //searchCepBloc.searchCep.add(textController.text);
+                //searchCepBloc.add(textController.text);
+                context
+                    .read<SearchCepBloc>()
+                    .add(textController.text); // Usando injeção de dependências
               },
             ),
             SizedBox(height: 20),
-            StreamBuilder<SearchCepState>(
-              stream: searchCepBloc.cepResult,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+            BlocBuilder<SearchCepBloc, SearchCepState>(
+              // BlocBuilder<Bloc, TipoBloc> -> BlocBuilder<Tipo do bloc que está usando (Recebe), Estado do bloc (Envia)>
+              bloc: context.read<
+                  SearchCepBloc>(), // Não precisa nem passar o bloc quando está usando o MultiProvider, pois ele já identifica pela tipagem do BlocBuilder
+              //stream: searchCepBloc.cepResult,
+              builder: (context, state) {
+                /*
+                if (!state.hasData) {
                   return Container();
                 }
-
-                var state = snapshot.data;
+                var state = state.data;*/
 
                 if (state is SearchCepError) {
                   return Text(
-                    'Cidade: ${snapshot.error}',
+                    'Cidade: ${state.message}',
                     style: TextStyle(color: Colors.red),
                   );
                 }
@@ -60,7 +75,13 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 state = state as SearchCepSucess;
-                return Text('Cidade: ${state.data['localidade']}');
+
+                if (state.data.isEmpty) {
+                  Container();
+                }
+
+                return Text(
+                    'Cidade: ${state.data['localidade']}/${state.data['uf']}');
               },
             ),
           ],
