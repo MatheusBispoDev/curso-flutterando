@@ -1,12 +1,43 @@
 import 'package:bloc_aulao/app/home_page.dart';
-import 'package:bloc_aulao/app/search_cep_bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:bloc_aulao/app/module.dart' as home;
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
+// Usando GetIt
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    super.initState();
+    home.initModule();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    home.disposeModule();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // MultiProvider para aplicar o conceito de injeção de dependencia
+    return MaterialApp(
+      title: 'Flutter Demo',
+      home: HomePage(),
+    );
+  }
+}
+
+/*
+// Usando MultiProvide
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,3 +56,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+*/
