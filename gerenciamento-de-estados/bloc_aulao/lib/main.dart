@@ -1,9 +1,10 @@
 import 'package:bloc_aulao/app/home_page.dart';
+import 'package:bloc_aulao/app/module.dart';
 import 'package:flutter/material.dart';
-import 'package:bloc_aulao/app/module.dart' as home;
+import 'package:flutter_modular/flutter_modular.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ModularApp(module: appModule(), child: MyApp()));
 }
 
 // Usando GetIt
@@ -13,26 +14,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-  @override
-  void initState() {
-    super.initState();
-    home.initModule();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    home.disposeModule();
-  }
-
   @override
   Widget build(BuildContext context) {
     // MultiProvider para aplicar o conceito de injeção de dependencia
     return MaterialApp(
       title: 'Flutter Demo',
       home: HomePage(),
-    );
+    ).modular();
   }
 }
 

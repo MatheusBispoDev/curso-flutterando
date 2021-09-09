@@ -2,6 +2,7 @@ import 'package:bloc_aulao/app/search_cep_bloc.dart';
 import 'package:bloc_aulao/app/search_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:get_it/get_it.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,14 +47,15 @@ class _HomePageState extends State<HomePage> {
                 //searchCepBloc.searchCep.add(textController.text); // Por FutureBuilder
                 //searchCepBloc.add(textController.text); Por StreamBuilder
                 //context.read<SearchCepBloc>().add(textController.text); // Usando injeção de dependências com flutter_bloc
-                GetIt.I<SearchCepBloc>().add(textController.text); // Usando injeção de dependências com flutter_bloc e GetIt
+                Modular.get<SearchCepBloc>().add(textController
+                    .text); // Usando injeção de dependências com flutter_bloc e GetIt
               },
             ),
             SizedBox(height: 20),
             BlocBuilder<SearchCepBloc, SearchCepState>(
               // BlocBuilder<Bloc, TipoBloc> -> BlocBuilder<Tipo do bloc que está usando (Recebe), Estado do bloc (Envia)>
               //bloc: context.read<SearchCepBloc>(), // Não precisa nem passar o bloc quando está usando o MultiProvider, pois ele já identifica pela tipagem do BlocBuilder
-              bloc: GetIt.I<SearchCepBloc>(),
+              bloc: Modular.get<SearchCepBloc>(),
               //stream: searchCepBloc.cepResult, // Por FutureBuilder ou StreamBuilder
               builder: (context, state) {
                 /*

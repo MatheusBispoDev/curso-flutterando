@@ -1,16 +1,15 @@
+import 'package:bloc_aulao/app/home_page.dart';
 import 'package:bloc_aulao/app/search_cep_bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
-final getIt = GetIt.instance;
+class appModule extends Module {
+  final List<Bind<Object>> binds = [
+    Bind.factory((i) => Dio()), // factory muda a instância cada vez que chamar
+    Bind.singleton((i) => SearchCepBloc(i())), // Singleton mantém a mesma intância em todos os casos
+  ];
 
-initModule() {
-  getIt.registerFactory(() => Dio());
-  getIt.registerFactory(() => SearchCepBloc(getIt()));
-}
-
-disposeModule() {
-  getIt<SearchCepBloc>().close();
-  getIt.unregister<SearchCepBloc>();
-  getIt.unregister<Dio>();
+  final List<ModularRoute> routes = [
+    ChildRoute('/', child: (_, __) => HomePage()),
+  ];
 }
