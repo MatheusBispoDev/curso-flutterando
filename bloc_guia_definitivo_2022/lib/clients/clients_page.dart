@@ -4,6 +4,7 @@ import 'package:bloc_guia_definitivo_2022/clients/bloc/client_events.dart';
 import 'package:bloc_guia_definitivo_2022/clients/bloc/cliente_state.dart';
 import 'package:bloc_guia_definitivo_2022/clients/client.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ClientsPage extends StatefulWidget {
   const ClientsPage({Key? key}) : super(key: key);
@@ -56,34 +57,42 @@ class _ClientsPageState extends State<ClientsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24),
-        child: StreamBuilder<ClientState>(
-          stream: bloc.stream,
-          builder: (context, AsyncSnapshot<ClientState> snapshot) {
-            final clientsList = snapshot.data?.clients ?? [];
+        child: BlocBuilder<ClientBloc, ClientState>(
+          bloc: bloc,
+          builder: (context, state) {
+            if (state is ClientInitialState) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is ClientSucessState) {
+              final clientsList = state.clients;
 
-            return ListView.separated(
-              itemCount: clientsList.length,
-              separatorBuilder: (_, __) => const Divider(),
-              itemBuilder: (
-                context,
-                index,
-              ) =>
-                  ListTile(
-                leading: CircleAvatar(
-                  child: ClipRRect(
-                    child: Text(clientsList[index].nome.substring(0, 1)),
-                    borderRadius: BorderRadius.circular(50),
+              return ListView.separated(
+                itemCount: clientsList.length,
+                separatorBuilder: (_, __) => const Divider(),
+                itemBuilder: (
+                  context,
+                  index,
+                ) =>
+                    ListTile(
+                  leading: CircleAvatar(
+                    child: ClipRRect(
+                      child: Text(clientsList[index].nome.substring(0, 1)),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                  title: Text(clientsList[index].nome),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: () {
+                      bloc.add(RemoveClientEvent(client: clientsList[index]));
+                    },
                   ),
                 ),
-                title: Text(clientsList[index].nome),
-                trailing: IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () {
-                    bloc.add(RemoveClientEvent(client: clientsList[index]));
-                  },
-                ),
-              ),
-            );
+              );
+            }
+
+            return Container();
           },
         ),
       ),
