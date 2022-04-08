@@ -21,12 +21,12 @@ class _ClientsPageState extends State<ClientsPage> {
     super.initState();
 
     bloc = ClientBloc();
-    bloc.inputClient.add(LoadClientEvent());
+    bloc.add(LoadClientEvent());
   }
 
   @override
   void dispose() {
-    bloc.inputClient.close();
+    bloc.close();
     super.dispose();
   }
 
@@ -34,7 +34,7 @@ class _ClientsPageState extends State<ClientsPage> {
     final rand = Random();
     return [
       'Matheus Bispo',
-      'Layza Cristina',      
+      'Layza Cristina',
       'Lucas Bispo',
       'Layla Regina',
     ].elementAt(rand.nextInt(5));
@@ -48,8 +48,7 @@ class _ClientsPageState extends State<ClientsPage> {
         actions: [
           IconButton(
             onPressed: () {
-              bloc.inputClient
-                  .add(AddClientEvent(client: Client(nome: randomName())));
+              bloc.add(AddClientEvent(client: Client(nome: randomName())));
             },
             icon: const Icon(Icons.person_add),
           ),
@@ -80,7 +79,7 @@ class _ClientsPageState extends State<ClientsPage> {
                 trailing: IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: () {
-                    bloc.inputClient.add(RemoveClientEvent(client: clientsList[index]));
+                    bloc.add(RemoveClientEvent(client: clientsList[index]));
                   },
                 ),
               ),
